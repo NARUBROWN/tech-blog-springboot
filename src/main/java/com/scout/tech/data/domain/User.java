@@ -4,6 +4,7 @@ import com.scout.tech.common.data.BaseTimeEntity;
 import com.scout.tech.common.enums.Role;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -40,6 +41,15 @@ public class User extends BaseTimeEntity implements UserDetails {
 
     @Column(name = "bio", length = 500)
     private String bio;
+
+    @Builder
+    public User(String username, String email, String hashedPassword, String profileImageUrl, Role role) {
+        this.username = username;
+        this.email = email;
+        this.hashedPassword = hashedPassword;
+        this.profileImageUrl = profileImageUrl;
+        this.role = role;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

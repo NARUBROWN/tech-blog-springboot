@@ -6,6 +6,7 @@ public record PostRequest(
         String thumbnailUrl,
         String seoTitle,
         String seoDescription,
-        String seoKeywords
+        String seoKeywords,
+        TagRequest tags
 ) {
 }
