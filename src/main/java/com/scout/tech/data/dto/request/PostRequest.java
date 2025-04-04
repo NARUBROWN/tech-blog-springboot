@@ -1,0 +1,11 @@
+package com.scout.tech.data.dto.request;
+
+public record PostRequest(
+        String title,
+        String content,
+        String thumbnailUrl,
+        String seoTitle,
+        String seoDescription,
+        String seoKeywords
+) {
+}

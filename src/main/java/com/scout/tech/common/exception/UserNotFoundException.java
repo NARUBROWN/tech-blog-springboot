@@ -1,0 +1,14 @@
+package com.scout.tech.common.exception;
+
+import com.scout.tech.common.enums.ErrorCode;
+
+public class UserNotFoundException extends CustomException {
+
+    /**
+     * 유저를 찾을 수 없을때 발생하는 에러
+     * @param userId 유저 ID
+     */
+    public UserNotFoundException(Long userId) {
+        super(ErrorCode.USER_NOT_FOUND, "유저를 찾을 수 없습니다. id: " + userId);
+    }
+}
