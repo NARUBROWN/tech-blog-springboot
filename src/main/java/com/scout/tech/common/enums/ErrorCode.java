@@ -6,7 +6,8 @@ public enum ErrorCode {
     POST_NOT_FOUND(404, "포스트를 찾을 수 없습니다."),
     POST_TAG_NOT_FOUND(404, "포스트 태그를 찾을 수 없습니다."),
     TAG_NOT_FOUND(404, "태그를 찾을 수 없습니다."),
-    USER_NOT_FOUND(404, "유저를 찾을 수 없습니다.");
+    USER_NOT_FOUND(404, "유저를 찾을 수 없습니다."),
+    PASSWORD_NOT_MATCH(403, "패스워드가 일치하지 않습니다.");
 
     private final int statusCode;
     private final String message;

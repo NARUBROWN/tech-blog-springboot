@@ -33,7 +33,6 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
     }
 
-
     @Override
     public UserDetails loadUserByUsername(String username) {
         return userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));

@@ -1,5 +1,6 @@
 package com.scout.tech.config;
 
+import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -7,6 +8,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
+import java.util.Date;
+import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -25,6 +28,28 @@ public class JwtProvider {
     @PostConstruct
     public void init() {
         this.key = Keys.hmacShaKeyFor(secretKey.getBytes());
+    }
+
+
+    public String createAccessToken(Long userId, String username) {
+        Map<String, Object> extraClaims = Map.of("userId", userId);
+        return buildToken(extraClaims, username, accessTokenExpiration);
+    }
+
+    public String createRefreshToken(Long userId, String username) {
+        Map<String, Object> extraClaims = Map.of("userId", userId);
+        return buildToken(extraClaims, username, refreshTokenExpiration);
+    }
+
+
+    private String buildToken(Map<String, Object> extraClaims, String username, Long expiration) {
+        return Jwts.builder()
+                .setClaims(extraClaims)
+                .setSubject(username)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + expiration))
+                .signWith(key)
+                .compact();
     }
 
 
