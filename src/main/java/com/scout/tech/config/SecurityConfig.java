@@ -7,6 +7,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.context.NullSecurityContextRepository;
 
 @Configuration
 @EnableWebSecurity
@@ -33,7 +34,8 @@ public class SecurityConfig {
                         authorize.requestMatchers(WHITE_LIST_URL).permitAll()
                                 .anyRequest().authenticated())
                 .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .securityContext(securityContext -> securityContext.securityContextRepository(new NullSecurityContextRepository()));
 
         return http.build();
     }

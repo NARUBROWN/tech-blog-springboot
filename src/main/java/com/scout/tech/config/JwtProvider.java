@@ -3,8 +3,10 @@ package com.scout.tech.config;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -53,8 +55,29 @@ public class JwtProvider {
     }
 
 
+    public void setTokenCookie(HttpServletResponse response, String accessToken, String refreshToken) {
+        ResponseCookie accessTokenCookie = ResponseCookie.from("accessToken", accessToken)
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .sameSite("None")
+                .maxAge(this.convertMilliSecondsToSeconds(this.accessTokenExpiration))
+                .build();
 
+        ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", refreshToken)
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .sameSite("None")
+                .maxAge(this.convertMilliSecondsToSeconds(this.refreshTokenExpiration))
+                .build();
 
+        response.addHeader("Set-Cookie", accessTokenCookie.toString());
+        response.addHeader("Set-Cookie", refreshTokenCookie.toString());
+    }
 
+    private Long convertMilliSecondsToSeconds(Long time) {
+        return time / 1000;
+    }
 
 }

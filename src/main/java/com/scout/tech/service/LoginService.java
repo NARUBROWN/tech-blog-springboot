@@ -5,7 +5,7 @@ import com.scout.tech.common.exception.LoginException;
 import com.scout.tech.config.JwtProvider;
 import com.scout.tech.data.domain.User;
 import com.scout.tech.data.dto.request.LoginRequest;
-import com.scout.tech.data.dto.response.TokenResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,7 +17,7 @@ public class LoginService {
     private final JwtProvider jwtProvider;
     private final PasswordEncoder passwordEncoder;
 
-    public TokenResponse login(LoginRequest loginRequest) {
+    public void login(HttpServletResponse response, LoginRequest loginRequest) {
         User user = (User) userService.loadUserByUsername(loginRequest.username());
 
         if (passwordEncoder.matches(loginRequest.password(), user.getHashedPassword())) {
@@ -27,6 +27,9 @@ public class LoginService {
         String accessToken = jwtProvider.createAccessToken(user.getId(), user.getUsername());
         String refreshToken = jwtProvider.createRefreshToken(user.getId(), user.getUsername());
 
-        return new TokenResponse(accessToken, refreshToken);
+        jwtProvider.setTokenCookie(response, accessToken, refreshToken);
     }
+
+
+
 }
