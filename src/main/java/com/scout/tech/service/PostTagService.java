@@ -23,16 +23,21 @@ public class PostTagService {
         List<Tag> tagList = tagRepository.findAllByNameIn(tags);
         // DB에서 확인된 tagNames 목록을 String으로 저장함
         List<String> tagNames = tagList.stream().map(Tag::getName).toList();
-        List<String> notExistTags = new ArrayList<>();
+        // DB에 존재하지 않는 태그 목록을 저장하기 위해 List 선언
+        List<Tag> notExistTags = new ArrayList<>();
 
+        // 사용자가 요청한 tags를 순회하면서, DB에 확인된 목록에 없다면 존재하지 않는 태그 목록에 추가함
         for (String tag : tags) {
             if (!tagNames.contains(tag)) {
-                notExistTags.add(tag);
+                notExistTags.add(new Tag(tag));
             }
         }
 
-        List<Tag> notExistTagList = new ArrayList<>();
+        // DB에 존재하지 않는 TAG들을 DB에 저장
+        List<Tag> newTags= tagRepository.saveAll(notExistTags);
+        tagList.addAll(newTags);
 
+        // Post와 Tag를 연결시켜주는 Entity 생성
         List<PostTag> postTagList = new ArrayList<>();
         for (Tag tag : tagList) {
             postTagList.add(new PostTag(post, tag));

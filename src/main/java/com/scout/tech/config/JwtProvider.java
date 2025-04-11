@@ -48,9 +48,11 @@ public class JwtProvider {
 
     public boolean verifyRefreshTokenWithRedis(Long userId, String token) {
         RefreshToken refreshToken = refreshTokenRepository.findById(userId).orElseThrow(TokenInvalidException::new);
-        if (!refreshToken.getToken().equals(token)) {
-            refreshTokenRepository.deleteById(userId);
-            return false;
+        if (!(token == null)) {
+            if (!refreshToken.getToken().equals(token)) {
+                refreshTokenRepository.deleteById(userId);
+                return false;
+            }
         }
         return true;
     }
