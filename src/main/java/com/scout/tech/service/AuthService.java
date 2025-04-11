@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class LoginService {
+public class AuthService {
     private final UserService userService;
     private final JwtProvider jwtProvider;
     private final PasswordEncoder passwordEncoder;
@@ -20,12 +20,14 @@ public class LoginService {
     public void login(HttpServletResponse response, LoginRequest loginRequest) {
         User user = (User) userService.loadUserByUsername(loginRequest.username());
 
-        if (passwordEncoder.matches(loginRequest.password(), user.getHashedPassword())) {
+        if (!passwordEncoder.matches(loginRequest.password(), user.getHashedPassword())) {
             throw new LoginException(ErrorCode.PASSWORD_NOT_MATCH);
         }
 
         String accessToken = jwtProvider.createAccessToken(user.getId(), user.getUsername());
         String refreshToken = jwtProvider.createRefreshToken(user.getId(), user.getUsername());
+
+        jwtProvider.registerRefreshToken(user.getId(), refreshToken);
 
         jwtProvider.setTokenCookie(response, accessToken, refreshToken);
     }

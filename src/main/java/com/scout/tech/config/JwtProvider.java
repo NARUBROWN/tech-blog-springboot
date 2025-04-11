@@ -1,5 +1,8 @@
 package com.scout.tech.config;
 
+import com.scout.tech.common.exception.TokenInvalidException;
+import com.scout.tech.data.redis.object.RefreshToken;
+import com.scout.tech.data.redis.repository.RefreshTokenRepository;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
@@ -17,6 +20,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class JwtProvider {
 
+    private final RefreshTokenRepository refreshTokenRepository;
+
     @Value("${application.security.jwt.secret-key}")
     private String secretKey;
 
@@ -32,6 +37,40 @@ public class JwtProvider {
         this.key = Keys.hmacShaKeyFor(secretKey.getBytes());
     }
 
+    public void registerRefreshToken(Long userId, String token) {
+        RefreshToken refreshToken = RefreshToken.builder()
+                .userId(userId)
+                .token(token)
+                .ttl(this.convertMilliSecondsToSeconds(this.refreshTokenExpiration))
+                .build();
+        refreshTokenRepository.save(refreshToken);
+    }
+
+    public boolean verifyRefreshTokenWithRedis(Long userId, String token) {
+        RefreshToken refreshToken = refreshTokenRepository.findById(userId).orElseThrow(TokenInvalidException::new);
+        if (!refreshToken.getToken().equals(token)) {
+            refreshTokenRepository.deleteById(userId);
+            return false;
+        }
+        return true;
+    }
+
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public String getUsernameFromToken(String token) {
+        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().getSubject();
+    }
+
+    public Long getUserIdFromToken(String token) {
+        return  Long.parseLong(Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().get("userId").toString());
+    }
 
     public String createAccessToken(Long userId, String username) {
         Map<String, Object> extraClaims = Map.of("userId", userId);
@@ -42,7 +81,6 @@ public class JwtProvider {
         Map<String, Object> extraClaims = Map.of("userId", userId);
         return buildToken(extraClaims, username, refreshTokenExpiration);
     }
-
 
     private String buildToken(Map<String, Object> extraClaims, String username, Long expiration) {
         return Jwts.builder()
