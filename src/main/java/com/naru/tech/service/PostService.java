@@ -7,6 +7,7 @@ import com.naru.tech.data.domain.Category;
 import com.naru.tech.data.domain.Post;
 import com.naru.tech.data.domain.User;
 import com.naru.tech.data.dto.request.PostRequest;
+import com.naru.tech.data.dto.response.CategoryResponse;
 import com.naru.tech.data.dto.response.PostResponse;
 import com.naru.tech.data.dto.response.TagResponse;
 import com.naru.tech.data.dto.response.UserResponse;
@@ -14,9 +15,12 @@ import com.naru.tech.data.repository.CategoryRepository;
 import com.naru.tech.data.repository.PostRepository;
 import com.naru.tech.data.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 @Service
 @RequiredArgsConstructor
@@ -61,20 +65,30 @@ public class PostService {
 
     public PostResponse getPostBySlug(String slug) {
         Post post = postRepository.findBySlug(slug).orElseThrow(() -> new PostNotFoundException(slug));
-        User user = userRepository.findById(post.getUser().getId()).orElseThrow(() -> new UserNotFoundException(post.getUser().getId()));
 
-        UserResponse userResponse = UserResponse.fromEntity(user);
+        UserResponse userResponse = UserResponse.fromEntity(post.getUser());
         TagResponse tagResponse = postTagService.findTagListByPost(post);
-        return PostResponse.fromEntity(post, userResponse, tagResponse);
+        CategoryResponse categoryResponse = CategoryResponse.fromEntity(post.getCategory());
+        return PostResponse.fromEntity(post, userResponse, tagResponse, categoryResponse);
     }
 
     public PostResponse getPostById(Long id) {
         Post post = postRepository.findById(id).orElseThrow(() -> new PostNotFoundException(id));
-        User user = userRepository.findById(post.getUser().getId()).orElseThrow(() -> new UserNotFoundException(post.getUser().getId()));
 
-        UserResponse userResponse = UserResponse.fromEntity(user);
+        UserResponse userResponse = UserResponse.fromEntity(post.getUser());
         TagResponse tagResponse = postTagService.findTagListByPost(post);
+        CategoryResponse categoryResponse = CategoryResponse.fromEntity(post.getCategory());
 
-        return PostResponse.fromEntity(post, userResponse, tagResponse);
+        return PostResponse.fromEntity(post, userResponse, tagResponse, categoryResponse);
+    }
+
+    public Page<PostResponse> getAllPost(Pageable pageable) {
+        return postRepository.findAll(pageable)
+                .map(post -> PostResponse.fromEntity(
+                        post,
+                        UserResponse.fromEntity(post.getUser()),
+                        postTagService.findTagListByPost(post),
+                        CategoryResponse.fromEntity(post.getCategory())
+                ));
     }
 }

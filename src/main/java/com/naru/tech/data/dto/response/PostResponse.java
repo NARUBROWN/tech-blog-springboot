@@ -17,9 +17,10 @@ public record PostResponse(
         String seoDescription,
         String seoKeywords,
         UserResponse author,
-        TagResponse tags
+        TagResponse tags,
+        CategoryResponse category
 ) {
-    public static PostResponse fromEntity(Post post, UserResponse author, TagResponse tags) {
+    public static PostResponse fromEntity(Post post, UserResponse author, TagResponse tags, CategoryResponse category) {
         return PostResponse.builder()
                 .id(post.getId())
                 .title(post.getTitle())
@@ -32,6 +33,7 @@ public record PostResponse(
                 .seoKeywords(post.getSeoKeywords())
                 .author(author)
                 .tags(tags)
+                .category(category)
                 .build();
     }
 }
