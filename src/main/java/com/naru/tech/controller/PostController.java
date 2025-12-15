@@ -1,6 +1,5 @@
 package com.naru.tech.controller;
 
-import com.naru.tech.data.domain.Post;
 import com.naru.tech.data.dto.request.PostRequest;
 import com.naru.tech.data.dto.response.PostResponse;
 import com.naru.tech.service.PostService;
@@ -42,17 +41,18 @@ public class PostController {
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping(path = "/all")
-    public ResponseEntity<Page<PostResponse>> getAllPost(
+    @GetMapping
+    public ResponseEntity<Page<PostResponse>> getPost(
+            @RequestParam(required = false)
+            String categoryName,
             @Parameter(hidden = true)
             @PageableDefault(
-                    size = 10,
                     sort = "createdAt",
                     direction = Sort.Direction.DESC
             )
             Pageable pageable
     ) {
-        Page<PostResponse> result = postService.getAllPost(pageable);
+        Page<PostResponse> result = postService.getPost(categoryName, pageable);
         return ResponseEntity.ok(result);
     }
 }

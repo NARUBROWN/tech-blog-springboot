@@ -16,8 +16,14 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping(path = "/author-signup")
-    public ResponseEntity<Void> signup(@RequestBody UserRequest userRequest) {
+    public ResponseEntity<Void> authorSignup(@RequestBody UserRequest userRequest) {
         userService.createAuthorUser(userRequest);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping(path = "/admin-signup")
+    public ResponseEntity<Void> AdminSignup(@RequestBody UserRequest userRequest) {
+        userService.createAdminUser(userRequest);
         return ResponseEntity.ok().build();
     }
 }

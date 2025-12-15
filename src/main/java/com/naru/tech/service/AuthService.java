@@ -5,6 +5,7 @@ import com.naru.tech.common.exception.LoginException;
 import com.naru.tech.config.JwtProvider;
 import com.naru.tech.data.domain.User;
 import com.naru.tech.data.dto.request.LoginRequest;
+import com.naru.tech.data.dto.response.LoginResponse;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,7 +18,7 @@ public class AuthService {
     private final JwtProvider jwtProvider;
     private final PasswordEncoder passwordEncoder;
 
-    public void login(HttpServletResponse response, LoginRequest loginRequest) {
+    public LoginResponse login(HttpServletResponse response, LoginRequest loginRequest) {
         User user = (User) userService.loadUserByUsername(loginRequest.username());
 
         if (!passwordEncoder.matches(loginRequest.password(), user.getHashedPassword())) {
@@ -30,6 +31,8 @@ public class AuthService {
         jwtProvider.registerRefreshToken(user.getId(), refreshToken);
 
         jwtProvider.setTokenCookie(response, accessToken, refreshToken);
+
+        return LoginResponse.fromEntity(user);
     }
 
 

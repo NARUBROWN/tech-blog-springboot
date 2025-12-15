@@ -33,6 +33,18 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
     }
 
+    public void createAdminUser(UserRequest userRequest) {
+        String hashedPassword = passwordEncoder.encode(userRequest.originalPassword());
+        User user = User.builder()
+                .username(userRequest.username())
+                .email(userRequest.email())
+                .hashedPassword(hashedPassword)
+                .profileImageUrl(userRequest.profileImageUrl())
+                .role(Role.ROLE_ADMIN)
+                .build();
+        userRepository.save(user);
+    }
+
     @Override
     public UserDetails loadUserByUsername(String username) {
         return userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));

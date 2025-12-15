@@ -1,9 +1,11 @@
 package com.naru.tech.service;
 
 import com.naru.tech.common.exception.CategoryNotFoundException;
+import com.naru.tech.common.exception.LikeNotFoundException;
 import com.naru.tech.common.exception.PostNotFoundException;
 import com.naru.tech.common.exception.UserNotFoundException;
 import com.naru.tech.data.domain.Category;
+import com.naru.tech.data.domain.Like;
 import com.naru.tech.data.domain.Post;
 import com.naru.tech.data.domain.User;
 import com.naru.tech.data.dto.request.PostRequest;
@@ -12,15 +14,16 @@ import com.naru.tech.data.dto.response.PostResponse;
 import com.naru.tech.data.dto.response.TagResponse;
 import com.naru.tech.data.dto.response.UserResponse;
 import com.naru.tech.data.repository.CategoryRepository;
+import com.naru.tech.data.repository.LikeRepository;
 import com.naru.tech.data.repository.PostRepository;
 import com.naru.tech.data.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 
 @Service
 @RequiredArgsConstructor
@@ -29,17 +32,11 @@ public class PostService {
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
     private final PostTagService postTagService;
+    private final LikeRepository likeRepository;
 
-    /**
-     *
-     * @param postRequest
-     * @param categoryId
-     * @param username
-     */
     public void createPost(PostRequest postRequest, Long categoryId, String username) {
         Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new CategoryNotFoundException(categoryId));
         User user = userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
-
 
         LocalDateTime now = LocalDateTime.now();
 
@@ -82,7 +79,16 @@ public class PostService {
         return PostResponse.fromEntity(post, userResponse, tagResponse, categoryResponse);
     }
 
-    public Page<PostResponse> getAllPost(Pageable pageable) {
+    public Page<PostResponse> getPost(String categoryName, Pageable pageable) {
+        if (categoryName != null) {
+            return postRepository.findAllByCategory_Name(categoryName, pageable)
+                    .map(post -> PostResponse.fromEntity(
+                            post,
+                            UserResponse.fromEntity(post.getUser()),
+                            postTagService.findTagListByPost(post),
+                            CategoryResponse.fromEntity(post.getCategory())
+                    ));
+        }
         return postRepository.findAll(pageable)
                 .map(post -> PostResponse.fromEntity(
                         post,
@@ -90,5 +96,30 @@ public class PostService {
                         postTagService.findTagListByPost(post),
                         CategoryResponse.fromEntity(post.getCategory())
                 ));
+    }
+
+    @Transactional
+    public void likePost(Long postId, Long userId) {
+        Post post = postRepository.findById(postId).orElseThrow(() -> new PostNotFoundException(postId));
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+
+        if (likeRepository.existsByPostIdAndUserId(postId, userId)) {
+            throw new IllegalStateException("이미 좋아요를 눌렀습니다.");
+        }
+
+        Like like = new Like(post, user);
+        likeRepository.save(like);
+
+        post.increaseLike();
+    }
+
+    @Transactional
+    public void unlikePost(Long postId, Long userId) {
+        Like like = likeRepository.findByPostIdAndUserId(postId, userId).orElseThrow(LikeNotFoundException::new);
+
+        Post post = like.getPost();
+        likeRepository.delete(like);
+
+        post.decreaseLike();
     }
 }

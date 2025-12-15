@@ -1,6 +1,7 @@
 package com.naru.tech.controller;
 
 import com.naru.tech.data.dto.request.LoginRequest;
+import com.naru.tech.data.dto.response.LoginResponse;
 import com.naru.tech.service.AuthService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -17,9 +18,9 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping(path = "/login")
-    public ResponseEntity<Void> login(HttpServletResponse response, @RequestBody LoginRequest loginRequest) {
-        authService.login(response, loginRequest);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<LoginResponse> login(HttpServletResponse response, @RequestBody LoginRequest loginRequest) {
+        LoginResponse result = authService.login(response, loginRequest);
+        return ResponseEntity.ok(result);
     }
 
 }
