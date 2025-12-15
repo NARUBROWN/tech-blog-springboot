@@ -3,6 +3,7 @@ package com.naru.tech.controller;
 import com.naru.tech.data.domain.User;
 import com.naru.tech.data.dto.request.LoginRequest;
 import com.naru.tech.data.dto.response.LoginResponse;
+import com.naru.tech.data.dto.response.UserResponse;
 import com.naru.tech.service.AuthService;
 import com.naru.tech.service.LikeService;
 import com.naru.tech.service.PostService;
@@ -13,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/like")
@@ -38,6 +41,12 @@ public class LikeController {
     ) {
         postService.unlikePost(postId, user.getId());
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping(path = "/{postId}")
+    public ResponseEntity<List<UserResponse>> findUsersWhoLikedPost(@PathVariable Long postId) {
+        List<UserResponse> result = likeService.findUsersWhoLikedPost(postId);
+        return ResponseEntity.ok(result);
     }
 
 }
