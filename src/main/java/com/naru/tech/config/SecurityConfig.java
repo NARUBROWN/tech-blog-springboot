@@ -41,6 +41,7 @@ public class SecurityConfig {
             "/webjars/**",
             "/swagger-ui.html",
             "/api/v1/user/author-signup",
+            "/api/v1/user/admin-signup",
             "/api/v1/auth/login"
     };
 

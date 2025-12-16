@@ -25,13 +25,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
-        System.out.println(
-                "[JWT FILTER] " +
-                        request.getMethod() + " " +
-                        request.getRequestURI()
-        );
-
-        filterChain.doFilter(request, response);
         // accessToken 추출
         String accessToken = this.extractToken(request, "accessToken");
         // refreshToken 추출
