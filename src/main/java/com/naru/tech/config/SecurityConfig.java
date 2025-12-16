@@ -53,6 +53,8 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(authorize ->
                         authorize
+                                // 카테고리 목록 조회 전체 공개
+                                .requestMatchers(HttpMethod.GET, "/api/v1/category/list").permitAll()
                                 // 게시글 목록 조회 전체 공개
                                 .requestMatchers(HttpMethod.GET, "/api/v1/post").permitAll()
                                 // 게시글 세부 조회 전체 공개
