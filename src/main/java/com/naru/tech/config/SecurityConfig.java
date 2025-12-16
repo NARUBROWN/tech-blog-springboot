@@ -26,6 +26,7 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     private static final String[] WHITE_LIST_URL = {
+            "/api/v1/image",
             "/api/v1/image/**",
             "/api/v1/post/slug/*",
             "/api/v1/post/id/*",
