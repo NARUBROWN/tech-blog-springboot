@@ -1,7 +1,7 @@
 package com.naru.tech.controller;
 
-import com.naru.tech.data.dto.request.PostRequest;
-import com.naru.tech.data.dto.response.PostResponse;
+import com.naru.tech.data.dto.web.request.PostRequest;
+import com.naru.tech.data.dto.web.response.PostResponse;
 import com.naru.tech.service.PostService;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;

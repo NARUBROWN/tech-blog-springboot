@@ -3,6 +3,7 @@ package com.naru.tech.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -48,7 +49,13 @@ public class SecurityConfig {
         http
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(authorize ->
-                        authorize.requestMatchers(WHITE_LIST_URL).permitAll()
+                        authorize
+                                // 좋아요 누른 사람들 목록 전체 공개
+                                .requestMatchers(HttpMethod.GET, "/api/v1/like/**").permitAll()
+                                // 이미지 조회 전체 공개
+                                .requestMatchers(HttpMethod.GET, "/api/v1/image/**").permitAll()
+                                // 나머지 기존 화이트 리스트
+                                .requestMatchers(WHITE_LIST_URL).permitAll()
                                 .anyRequest().authenticated())
                 .securityContext(context -> context
                         .requireExplicitSave(false)

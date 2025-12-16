@@ -1,7 +1,7 @@
 package com.naru.tech.service;
 
 import com.naru.tech.data.domain.Category;
-import com.naru.tech.data.dto.response.CategoryResponse;
+import com.naru.tech.data.dto.web.response.CategoryResponse;
 import com.naru.tech.data.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

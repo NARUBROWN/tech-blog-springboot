@@ -1,7 +1,7 @@
 package com.naru.tech.controller;
 
-import com.naru.tech.data.dto.request.LoginRequest;
-import com.naru.tech.data.dto.response.LoginResponse;
+import com.naru.tech.data.dto.web.request.LoginRequest;
+import com.naru.tech.data.dto.web.response.LoginResponse;
 import com.naru.tech.service.AuthService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

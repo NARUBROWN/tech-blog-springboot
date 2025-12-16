@@ -1,4 +1,4 @@
-package com.naru.tech.data.dto.response;
+package com.naru.tech.data.dto.web.response;
 
 import com.naru.tech.data.domain.Post;
 import lombok.Builder;
@@ -13,6 +13,7 @@ public record PostResponse(
         LocalDateTime publishedAt,
         Long likeCount,
         Long viewCount,
+        String thumbnailUrl,
         String seoTitle,
         String seoDescription,
         String seoKeywords,
@@ -27,6 +28,7 @@ public record PostResponse(
                 .content(post.getContent())
                 .publishedAt(post.getPublishedAt())
                 .likeCount(post.getLikeCount())
+                .thumbnailUrl(post.getThumbnailUrl())
                 .viewCount(post.getViewCount())
                 .seoTitle(post.getSeoTitle())
                 .seoDescription(post.getSeoDescription())

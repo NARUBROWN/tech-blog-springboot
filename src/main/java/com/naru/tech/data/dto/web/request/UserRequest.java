@@ -1,4 +1,4 @@
-package com.naru.tech.data.dto.request;
+package com.naru.tech.data.dto.web.request;
 
 public record UserRequest(
         String username,

@@ -1,6 +1,6 @@
 package com.naru.tech.controller;
 
-import com.naru.tech.data.dto.response.CategoryResponse;
+import com.naru.tech.data.dto.web.response.CategoryResponse;
 import com.naru.tech.service.CategoryService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

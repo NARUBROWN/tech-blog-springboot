@@ -1,6 +1,5 @@
-package com.naru.tech.data.dto.response;
+package com.naru.tech.data.dto.web.response;
 
-import com.naru.tech.common.enums.Role;
 import com.naru.tech.data.domain.User;
 
 public record LoginResponse(

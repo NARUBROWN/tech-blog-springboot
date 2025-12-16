@@ -3,7 +3,7 @@ package com.naru.tech.service;
 import com.naru.tech.common.enums.Role;
 import com.naru.tech.common.exception.UserNotFoundException;
 import com.naru.tech.data.domain.User;
-import com.naru.tech.data.dto.request.UserRequest;
+import com.naru.tech.data.dto.web.request.UserRequest;
 import com.naru.tech.data.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;

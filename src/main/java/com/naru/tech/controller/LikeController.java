@@ -1,18 +1,13 @@
 package com.naru.tech.controller;
 
 import com.naru.tech.data.domain.User;
-import com.naru.tech.data.dto.request.LoginRequest;
-import com.naru.tech.data.dto.response.LoginResponse;
-import com.naru.tech.data.dto.response.UserResponse;
-import com.naru.tech.service.AuthService;
+import com.naru.tech.data.dto.web.response.UserResponse;
 import com.naru.tech.service.LikeService;
 import com.naru.tech.service.PostService;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

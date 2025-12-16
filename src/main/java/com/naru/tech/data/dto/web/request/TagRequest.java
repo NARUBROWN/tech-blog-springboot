@@ -1,4 +1,4 @@
-package com.naru.tech.data.dto.request;
+package com.naru.tech.data.dto.web.request;
 
 import java.util.List;
 

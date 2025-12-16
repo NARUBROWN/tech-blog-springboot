@@ -3,7 +3,7 @@ package com.naru.tech.service;
 import com.naru.tech.data.domain.Post;
 import com.naru.tech.data.domain.PostTag;
 import com.naru.tech.data.domain.Tag;
-import com.naru.tech.data.dto.response.TagResponse;
+import com.naru.tech.data.dto.web.response.TagResponse;
 import com.naru.tech.data.repository.PostTagRepository;
 import com.naru.tech.data.repository.TagRepository;
 import lombok.RequiredArgsConstructor;

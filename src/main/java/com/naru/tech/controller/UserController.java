@@ -1,6 +1,6 @@
 package com.naru.tech.controller;
 
-import com.naru.tech.data.dto.request.UserRequest;
+import com.naru.tech.data.dto.web.request.UserRequest;
 import com.naru.tech.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
