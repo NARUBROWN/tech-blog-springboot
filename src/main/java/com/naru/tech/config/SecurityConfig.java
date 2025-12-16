@@ -53,6 +53,10 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(authorize ->
                         authorize
+                                // 게시글 목록 조회 전체 공개
+                                .requestMatchers(HttpMethod.GET, "/api/v1/post").permitAll()
+                                // 게시글 세부 조회 전체 공개
+                                .requestMatchers(HttpMethod.GET, "/api/v1/post/**").permitAll()
                                 // 좋아요 누른 사람들 목록 전체 공개
                                 .requestMatchers(HttpMethod.GET, "/api/v1/like/**").permitAll()
                                 // 나머지 기존 화이트 리스트
