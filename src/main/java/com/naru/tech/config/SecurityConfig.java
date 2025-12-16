@@ -26,6 +26,7 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     private static final String[] WHITE_LIST_URL = {
+            "/api/v1/image/**",
             "/api/v1/post/slug/*",
             "/api/v1/post/id/*",
             "/api/v1/post/all",
@@ -53,8 +54,6 @@ public class SecurityConfig {
                         authorize
                                 // 좋아요 누른 사람들 목록 전체 공개
                                 .requestMatchers(HttpMethod.GET, "/api/v1/like/**").permitAll()
-                                // 이미지 조회 전체 공개
-                                .requestMatchers(HttpMethod.GET, "/api/v1/image/**").permitAll()
                                 // 나머지 기존 화이트 리스트
                                 .requestMatchers(WHITE_LIST_URL).permitAll()
                                 .anyRequest().authenticated())
