@@ -2,6 +2,7 @@ package com.naru.tech.data.domain;
 
 import com.naru.tech.common.data.BaseTimeEntity;
 import com.naru.tech.common.enums.Role;
+import com.naru.tech.data.dto.web.request.UserRequest;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -64,5 +65,14 @@ public class User extends BaseTimeEntity implements UserDetails {
     @Override
     public String getUsername() {
         return this.username;
+    }
+
+    // 권한 변경은 안됨
+    public void updateByDto(UserRequest userRequest, String hashedPassword) {
+        this.username = userRequest.username();
+        this.email = userRequest.email();
+        this.hashedPassword = hashedPassword;
+        this.profileImageUrl = userRequest.profileImageUrl();
+        this.bio = userRequest.bio();
     }
 }

@@ -1,13 +1,11 @@
 package com.naru.tech.controller;
 
 import com.naru.tech.data.dto.web.request.UserRequest;
+import com.naru.tech.data.dto.web.response.UserResponse;
 import com.naru.tech.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -25,5 +23,20 @@ public class UserController {
     public ResponseEntity<Void> AdminSignup(@RequestBody UserRequest userRequest) {
         userService.createAdminUser(userRequest);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping(path = "/normal-signup")
+    public ResponseEntity<Void> NormalSignup(@RequestBody UserRequest userRequest) {
+        userService.createNormalUser(userRequest);
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping(path = "/{id}")
+    public ResponseEntity<UserResponse> updateUserInfo(
+            @PathVariable Long id,
+            @RequestBody UserRequest userRequest
+    ) {
+        UserResponse result = userService.updateUserInfo(id, userRequest);
+        return ResponseEntity.ok(result);
     }
 }
