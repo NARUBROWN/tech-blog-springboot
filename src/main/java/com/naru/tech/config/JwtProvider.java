@@ -46,9 +46,15 @@ public class JwtProvider {
         refreshTokenRepository.save(refreshToken);
     }
 
+    public void deleteRefreshToken(String token) {
+        if (token == null) return;
+        RefreshToken refreshToken = refreshTokenRepository.findByToken(token);
+        refreshTokenRepository.delete(refreshToken);
+    }
+
     public boolean verifyRefreshTokenWithRedis(Long userId, String token) {
         RefreshToken refreshToken = refreshTokenRepository.findById(userId).orElseThrow(TokenInvalidException::new);
-        if (!(token == null)) {
+        if (token != null) {
             if (!refreshToken.getToken().equals(token)) {
                 refreshTokenRepository.deleteById(userId);
                 return false;
@@ -111,6 +117,28 @@ public class JwtProvider {
                 .sameSite("None")
                 .maxAge(this.convertMilliSecondsToSeconds(this.refreshTokenExpiration))
                 .build();
+
+        response.addHeader("Set-Cookie", accessTokenCookie.toString());
+        response.addHeader("Set-Cookie", refreshTokenCookie.toString());
+    }
+
+    public void clearTokenCookies(HttpServletResponse response) {
+        ResponseCookie accessTokenCookie = ResponseCookie.from("accessToken", "")
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .sameSite("None")
+                .maxAge(0)
+                .build();
+
+        ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", "")
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .sameSite("None")
+                .maxAge(0)
+                .build();
+
 
         response.addHeader("Set-Cookie", accessTokenCookie.toString());
         response.addHeader("Set-Cookie", refreshTokenCookie.toString());

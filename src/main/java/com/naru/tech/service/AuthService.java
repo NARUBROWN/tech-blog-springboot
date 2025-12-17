@@ -6,10 +6,14 @@ import com.naru.tech.config.JwtProvider;
 import com.naru.tech.data.domain.User;
 import com.naru.tech.data.dto.web.request.LoginRequest;
 import com.naru.tech.data.dto.web.response.LoginResponse;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +38,25 @@ public class AuthService {
 
         return LoginResponse.fromEntity(user);
     }
+
+    public void logout(HttpServletRequest request, HttpServletResponse response) {
+        Cookie refreshToken = getCookie(request, "refreshToken");
+
+        if (refreshToken == null) {
+            jwtProvider.deleteRefreshToken(refreshToken.getValue());
+        }
+        jwtProvider.clearTokenCookies(response);
+    }
+
+    private Cookie getCookie(HttpServletRequest request, String name) {
+        if (request.getCookies() == null) return null;
+
+        for (Cookie cookie : request.getCookies()) {
+            if (name.equals(cookie.getName())) return cookie;
+        }
+        return null;
+    }
+
 
 
 

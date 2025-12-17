@@ -3,6 +3,7 @@ package com.naru.tech.controller;
 import com.naru.tech.data.dto.web.request.LoginRequest;
 import com.naru.tech.data.dto.web.response.LoginResponse;
 import com.naru.tech.service.AuthService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,12 @@ public class AuthController {
     public ResponseEntity<LoginResponse> login(HttpServletResponse response, @RequestBody LoginRequest loginRequest) {
         LoginResponse result = authService.login(response, loginRequest);
         return ResponseEntity.ok(result);
+    }
+
+    @PostMapping(path = "logout")
+    public ResponseEntity<Void> logout(HttpServletRequest request, HttpServletResponse response) {
+        authService.logout(request, response);
+        return ResponseEntity.ok().build();
     }
 
 }
