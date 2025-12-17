@@ -50,4 +50,8 @@ public class PostTagService {
         List<String> tagNames = postTagRepository.findAllByPost(post).stream().map(PostTag::getTag).map(Tag::getName).toList();
         return new TagResponse(tagNames);
     }
+
+    public void deletePostTagRelation(Post post) {
+        postTagRepository.deleteAllByPost(post);
+    }
 }

@@ -13,10 +13,7 @@ import com.naru.tech.data.dto.web.response.CategoryResponse;
 import com.naru.tech.data.dto.web.response.PostResponse;
 import com.naru.tech.data.dto.web.response.TagResponse;
 import com.naru.tech.data.dto.web.response.UserResponse;
-import com.naru.tech.data.repository.CategoryRepository;
-import com.naru.tech.data.repository.LikeRepository;
-import com.naru.tech.data.repository.PostRepository;
-import com.naru.tech.data.repository.UserRepository;
+import com.naru.tech.data.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -96,6 +93,17 @@ public class PostService {
                         postTagService.findTagListByPost(post),
                         CategoryResponse.fromEntity(post.getCategory())
                 ));
+    }
+
+    @Transactional
+    public void deletePost(Long postId) {
+        Post post = postRepository.findById(postId).orElseThrow(() -> new PostNotFoundException(postId));
+        // 태그 삭제
+        postTagService.deletePostTagRelation(post);
+        // 좋아요 기록 삭제
+        likeRepository.deleteAllByPost(post);
+        // 포스트 삭제
+        postRepository.delete(post);
     }
 
     @Transactional
