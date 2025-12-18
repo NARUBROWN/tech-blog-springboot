@@ -25,7 +25,7 @@ public class Post extends BaseTimeEntity {
     private String slug;
 
     @Lob
-    @Column(name = "content")
+    @Column(name = "content", columnDefinition = "LONGTEXT")
     private String content;
 
     @Column(name = "published_at")
