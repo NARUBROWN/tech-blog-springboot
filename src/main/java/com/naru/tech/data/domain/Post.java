@@ -1,6 +1,7 @@
 package com.naru.tech.data.domain;
 
 import com.naru.tech.common.data.BaseTimeEntity;
+import com.naru.tech.data.dto.web.request.PostRequest;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -87,6 +88,20 @@ public class Post extends BaseTimeEntity {
 
     public void incrementViewCount() {
         this.viewCount++;
+    }
+
+    public String updatePostByDto(PostRequest postRequest, Category category) {
+        String slug = postRequest.title().trim().replaceAll("\\s+", "-");
+        this.title = postRequest.title();
+        this.slug = slug;
+        this.content = postRequest.content();
+        this.thumbnailUrl = postRequest.thumbnailUrl();
+        this.category = category;
+        this.seoTitle = postRequest.seoTitle();
+        this.seoDescription = postRequest.seoDescription();
+        this.seoKeywords = postRequest.seoKeywords();
+
+        return slug;
     }
 
 }

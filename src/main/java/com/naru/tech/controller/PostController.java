@@ -1,6 +1,7 @@
 package com.naru.tech.controller;
 
 import com.naru.tech.data.dto.web.request.PostRequest;
+import com.naru.tech.data.dto.web.response.PostEditResponse;
 import com.naru.tech.data.dto.web.response.PostResponse;
 import com.naru.tech.service.PostService;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -27,6 +28,16 @@ public class PostController {
         String username = userDetails.getUsername();
         postService.createPost(postRequest, categoryId, username);
         return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping
+    public ResponseEntity<PostEditResponse> modifyPost(
+            @RequestBody PostRequest postRequest,
+            @RequestParam Long categoryId,
+            @RequestParam Long postId
+    ) {
+        PostEditResponse result = postService.modifyPost(postId, categoryId, postRequest);
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping(path = "/slug/{slug}")

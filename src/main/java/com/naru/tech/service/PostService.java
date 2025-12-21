@@ -9,10 +9,7 @@ import com.naru.tech.data.domain.Like;
 import com.naru.tech.data.domain.Post;
 import com.naru.tech.data.domain.User;
 import com.naru.tech.data.dto.web.request.PostRequest;
-import com.naru.tech.data.dto.web.response.CategoryResponse;
-import com.naru.tech.data.dto.web.response.PostResponse;
-import com.naru.tech.data.dto.web.response.TagResponse;
-import com.naru.tech.data.dto.web.response.UserResponse;
+import com.naru.tech.data.dto.web.response.*;
 import com.naru.tech.data.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -55,6 +52,24 @@ public class PostService {
         Post savedPost = postRepository.save(post);
 
         postTagService.createPostTagRelation(savedPost, postRequest.tags().tagNames());
+    }
+
+    @Transactional
+    public PostEditResponse modifyPost(Long postId, Long categoryId, PostRequest postRequest) {
+        Post post = postRepository.findById(postId).orElseThrow(() -> new PostNotFoundException(postId));
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new CategoryNotFoundException(categoryId));
+
+        String slug = post.updatePostByDto(postRequest, category);
+
+        // Request에 태그 존재하면, 수정된거니
+        if (postRequest.tags() != null) {
+            // 기존 태그 관계 전부 삭제
+            postTagService.deletePostTagRelation(post);
+            // 태그 재등록
+            postTagService.createPostTagRelation(post, postRequest.tags().tagNames());
+        }
+
+        return new PostEditResponse(slug);
     }
 
     public PostResponse getPostBySlug(String slug) {
