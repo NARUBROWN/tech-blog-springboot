@@ -130,4 +130,9 @@ public class PostService {
 
         post.decreaseLike();
     }
+
+    @Transactional
+    public void incrementViewCount(Long postId) {
+        postRepository.incrementViewCount(postId);
+    }
 }
