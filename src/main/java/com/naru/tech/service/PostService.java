@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -149,5 +150,17 @@ public class PostService {
     @Transactional
     public void incrementViewCount(Long postId) {
         postRepository.incrementViewCount(postId);
+    }
+
+    public List<PostResponse> getRecentPosts(String keyword, Pageable pageable) {
+        Page<Post> postPage = postRepository.searchPost(keyword, pageable);
+        return postPage.stream().map(post ->
+                    PostResponse.fromEntity(
+                            post,
+                            UserResponse.fromEntity(post.getUser()),
+                            postTagService.findTagListByPost(post),
+                            CategoryResponse.fromEntity(post.getCategory())
+                    )
+                ).toList();
     }
 }

@@ -16,6 +16,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/post")
 @RequiredArgsConstructor
@@ -76,6 +78,15 @@ public class PostController {
             Pageable pageable
     ) {
         Page<PostResponse> result = postService.getPost(categoryName, pageable);
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping(path = "/search/recent")
+    public ResponseEntity<List<PostResponse>> getRecentPosts(
+            @RequestParam String keyword,
+            @PageableDefault(size = 5) Pageable pageable
+    ) {
+        List<PostResponse> result = postService.getRecentPosts(keyword, pageable);
         return ResponseEntity.ok(result);
     }
 }

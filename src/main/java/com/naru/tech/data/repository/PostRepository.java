@@ -18,4 +18,19 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Modifying
     @Query("update Post p set p.viewCount = p.viewCount + 1 where p.id = :id")
     void incrementViewCount(@Param("id") Long id);
+
+    @Query("""
+        select distinct p
+        from Post p
+        left join PostTag pt on pt.post = p
+        left join pt.tag t
+        where
+            lower(p.title) like lower(concat('%', :keyword, '%')) or
+            p.content like concat('%', :keyword, '%') or
+            lower(p.seoTitle) like lower(concat('%', :keyword, '%')) or
+            lower(p.seoDescription) like lower(concat('%', :keyword, '%')) or
+            lower(t.name) like lower(concat('%', :keyword, '%'))
+        order by p.publishedAt desc
+    """)
+    Page<Post> searchPost(@Param("keyword") String keyword, Pageable pageable);
 }
