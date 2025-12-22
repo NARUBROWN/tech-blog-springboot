@@ -84,6 +84,7 @@ public class PostController {
     @GetMapping(path = "/search/recent")
     public ResponseEntity<List<PostResponse>> getRecentPosts(
             @RequestParam String keyword,
+            @Parameter(hidden = true)
             @PageableDefault(size = 5) Pageable pageable
     ) {
         List<PostResponse> result = postService.getRecentPosts(keyword, pageable);
