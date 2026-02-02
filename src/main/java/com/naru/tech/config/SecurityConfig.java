@@ -82,7 +82,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:5173", "http://na2ru2.me", "https://na2ru2.me"));
+        config.setAllowedOrigins(List.of("http://localhost:5173", "http://na2ru2.me", "https://na2ru2.me", "https://www.na2ru2.me", "http://www.na2ru2.me"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
